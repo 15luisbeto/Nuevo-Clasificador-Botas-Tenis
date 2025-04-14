@@ -4,13 +4,6 @@ from tensorflow.keras.models import Model
 import numpy as np
 import joblib
 
-# Cargar solo las capas convolucionales del modelo VGG16
-model_vgg = VGG16(weights='imagenet', include_top=True)
-
-# Cargar el clasificador entrenado
-clf_loaded = joblib.load('models/multinomial_nb_classifier.joblib')
-
-# Etiquetas del modelo
 labels_names = ['Boot', 'Shoe']  # Ajusta según tu modelo
 
 # Función para extraer características
@@ -27,9 +20,16 @@ def extraccion_caracteristicas(ruta_imagen, model_red, red_preprocess):
         print(f"❌ Error al extraer características: {str(e)}")
         return None
 
-
 # Función principal de predicción
 def prediccion_modelo(ruta_imagen):
+    # 🔁 Cargar modelo de VGG16 SOLO al llamar esta función
+    model_vgg = VGG16(weights='imagenet', include_top=False)
+    model_vgg = Model(inputs=model_vgg.input, outputs=model_vgg.output)
+
+    # 🔁 Cargar clasificador
+    clf_loaded = joblib.load('models/multinomial_nb_classifier.joblib')
+
+    # Extraer características
     features = extraccion_caracteristicas(ruta_imagen, model_vgg, vgg16_preprocess)
     if features is None:
         return {"error": "No se pudieron extraer características"}
@@ -45,4 +45,5 @@ def prediccion_modelo(ruta_imagen):
         "prediccion": labels_names[predicted_class],
         "confianza": f"{probability * 100:.2f}%"
     }
+
 
