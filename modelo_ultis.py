@@ -23,8 +23,7 @@ def extraccion_caracteristicas(ruta_imagen, model_red, red_preprocess):
 # Función principal de predicción
 def prediccion_modelo(ruta_imagen):
     # 🔁 Cargar modelo de VGG16 SOLO al llamar esta función
-    model_vgg = VGG16(weights='imagenet', include_top=False)
-    model_vgg = Model(inputs=model_vgg.input, outputs=model_vgg.output)
+    model_vgg = VGG16(weights='imagenet')
 
     # 🔁 Cargar clasificador
     clf_loaded = joblib.load('models/multinomial_nb_classifier.joblib')
